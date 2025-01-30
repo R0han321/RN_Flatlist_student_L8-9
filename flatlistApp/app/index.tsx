@@ -8,29 +8,21 @@ import {
 import colors from "../styles/colors";
 import defaultStyles from "../styles/defaultStyles";
 import { useState } from "react";
+import ListItemSeparator from "@/components/ListItemSeparator";
+import ListItem from "@/components/ListItem";
+import { dataType, DATA } from "@/data/appData";
 
 export default function Index() {
 
   const [selectedId, setSelectedID] = useState<string>("1");
 
-  type dataType = {
-    id: string;
-    title: string;
-  }
-
-  const DATA: dataType[] = [
-    {id: "1", title: "First"},
-    {id: "2", title: "Second"},
-    {id: "3", title: "Third"},
-    {id: "4", title: "Fourth"},
-    {id: "5", title: "Fifth"},
-  ];
-
-  const selectedList = (item: dataType) => {
+  const handleRowPress = (item: dataType) => {
     setSelectedID(item.id);
     console.log("selected " + item.title);
   }
 
+  
+  
   return (
     <View style={defaultStyles.container}>
       <View style={defaultStyles.titleContainer}>
@@ -41,17 +33,14 @@ export default function Index() {
           <FlatList
           data = {DATA}
           keyExtractor={(item: dataType) => item.id}
+          ItemSeparatorComponent={<ListItemSeparator />}    
+          // ItemSeperatorComponent={() => <ListItemSeparator color="blue"/>}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => selectedList(item)}>
-              <View style={[styles.titleContainer, 
-                {
-                  backgroundColor: 
-                    item.id === selectedId ? colors.primary : colors.secondary
-                }
-              ]}>
-                <Text style={styles.titleContainer}>{item.title}</Text>
-              </View>
-            </TouchableOpacity>
+            <ListItem 
+              item={item}
+              isSelected={item.id === selectedId}
+              onPress={handleRowPress}
+            />
           )}
           />
         </View>
@@ -63,16 +52,5 @@ export default function Index() {
 const styles = StyleSheet.create({
   flatlist: {
     alignItems: "center",
-  },
-  titleContainer: {
-    marginTop: 5,
-    width: 300,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    backgroundColor: "lightblue",
-  },
-  titleText: {
-    fontSize: 24,
-    padding: 10,
   },
 });
